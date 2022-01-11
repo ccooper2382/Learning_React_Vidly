@@ -8,7 +8,9 @@ class Movies extends Component {
     };
 
     render() {
-        return <table className="table">
+        return <div>
+            <div>{this.state.movies.length === 0 ? <h1>There are no movies</h1> : <h1>There are {this.state.movies.length} movies</h1> }</div>
+        <table className="table">
             <thead>
             <tr>
                 <th>Title</th>
@@ -35,6 +37,7 @@ class Movies extends Component {
 
             </tbody>
         </table>
+        </div>
     };
 
     handleDelete = (movie) => {
