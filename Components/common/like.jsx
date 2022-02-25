@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Like = (props) => {
-    
+
         let classes = "";
         if (!props.liked) {
             classes = "bg-white text-black";

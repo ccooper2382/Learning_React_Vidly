@@ -1,17 +1,36 @@
 import React, {Component} from "react";
-import {getMovies} from "../services/fakeMovieService";
+
 import Like from "./common/like";
+import Pagination from "./common/Pagination";
+import ListGroup from "./common/ListGroup";
+import {getMovies} from "../services/fakeMovieService";
+import {paginate} from "../utils/paginate";
+import {getGenres} from "../services/fakeGenreService";
 
 
 class Movies extends Component {
     state = {
-        movies: getMovies()
+        movies: getMovies(),
+        currentPage: 1,
+        pageSize: 4,
+        genres: getGenres()
     };
 
     render() {
-        return <div>
-            <div>{this.state.movies.length === 0 ? <h1>There are no movies</h1>
-                : <h1>There are {this.state.movies.length} movies</h1>}</div>
+        const {length: count} = this.state.movies;
+        const {pageSize, currentPage, movies: allMovies} = this.state;
+
+
+        const genreList = [...this.state.genres];
+
+
+        const movies = paginate(allMovies, currentPage, pageSize);
+        return <React.Fragment>
+
+            <ListGroup genreInfo = {genreList}/>
+            <div>{count === 0 ? <h1>There are no movies</h1>
+                : <h1>There are {count} movies</h1>}</div>
+
             <table className="table">
                 <thead>
                 <tr>
@@ -23,7 +42,7 @@ class Movies extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                {this.state.movies.map(movie => (
+                {movies.map(movie => (
                     <tr key={movie._id}>
                         <td>{movie.title}</td>
                         <td>{movie.genre.name}</td>
@@ -32,7 +51,7 @@ class Movies extends Component {
                         <td><Like liked={movie.liked} onClick={() => this.handleLike(movie)}/></td>
                         <td>
                             <button onClick={() => this.handleDelete(movie) // the arrow function is needed
-                                // to let the click event take parameters.
+                                                                            // to let the click event take parameters.
                             }>Delete
                             </button>
 
@@ -41,21 +60,29 @@ class Movies extends Component {
 
                 </tbody>
             </table>
-        </div>
+            <Pagination itemsCount={count}
+                        pageSize={pageSize}
+                        currentPage={currentPage}
+                        onPageChange={this.handlePageChange}/>
+        </React.Fragment>
     };
 
     handleLike = (movie) => {
         const movies = [...this.state.movies];
-        const index=movies.indexOf(movie);
+        const index = movies.indexOf(movie);
         movies[index] = {...movies[index]};
         movies[index].liked = !movies[index].liked;
         this.setState({movies});
-    }
+    };
 
     handleDelete = (movie) => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
         this.setState({movies})
     };
+
+    handlePageChange = (page) => {
+       this.setState({currentPage: page});
+    }
 }
 
 export default Movies;
