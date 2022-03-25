@@ -12,6 +12,9 @@ code {
     monospace;
 }
 
+.navbar {
+  margin-bottom: 1em;
+}
 .clickable {
   cursor: pointer;
 }
