@@ -1,45 +1,34 @@
 import React, {Component} from 'react';
+import Joi from 'joi-browser';
+import Form from "./common/form";
 import Input from "./common/input";
 
-class LoginForm extends Component {
+class LoginForm extends Form {
     state = {
-        account: {username: '', password: ''},
+        data: {username: '', password: ''},
         errors: {}
     }
 
-    validate = () => {
-        const errors = {};
+    schema = {
+        username: Joi.string().required().label('Username'),
+        password: Joi.string().required().label('Password')
+    };
 
-        const { account } = this.state;
-        if (account.username.trim() === '')
-            errors.username='Username is required.';
-        if (account.password.trim() === '')
-            errors.password='Password is required.';
-        return Object.keys(errors).length === 0 ? null : errors;
+
+    doSubmit = () => {
+        //call server
+        console.log('submitted');
     }
 
-    handleSubmit = e => {
-        e.preventDefault();
-        const errors = this.validate();
-
-        this.setState({errors: errors || {}});
-        if (errors) return;
-        
-    }
-    handleChange = ({currentTarget: input}) => {
-        const account = {...this.state.account};
-        account[input.name] = input.value;
-        this.setState({account});
-    }
 
     render() {
-        const {account, errors} = this.state;
+        const {data, errors} = this.state;
         return (
             <div>
                 <h1>Login</h1>
                 <form onSubmit={this.handleSubmit}>
                     <Input name="username"
-                           value={account.username}
+                           value={data.username}
                            label="Username"
                            onChange={this.handleChange}
                            error={errors.username}
@@ -47,12 +36,12 @@ class LoginForm extends Component {
 
                     <Input
                         name="password"
-                        value={account.password}
+                        value={data.password}
                         label="Password"
                         onChange={this.handleChange}
                         error={errors.password}
                     />
-                    <button className="btn btn-primary">Login</button>
+                    <button className="btn btn-primary" disabled={this.validate()}>Login</button>
                 </form>
             </div>
         );
