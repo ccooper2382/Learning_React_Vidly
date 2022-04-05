@@ -1,17 +1,16 @@
 import React from 'react';
 
-function Input({name, label, value, error, onChange}) {
+function Input({name, label, error, ...rest}) {
     return (
         <React.Fragment>
-        <div className="form-group">
-            <label htmlFor={name}>{label}</label>
-            <input value={value}
-                   onChange={onChange}
-                   id={name}
-                   name={name}
-                   type="text"
-                   className="form-control"/>
-        </div>
+            <div className="form-group">
+                <label htmlFor={name}>{label}</label>
+                <input
+                    {...rest}
+                    id={name}
+                    name={name}
+                    className="form-control"/>
+            </div>
             {error && <div className="alert alert-danger">{error}</div>}
         </React.Fragment>
     );
